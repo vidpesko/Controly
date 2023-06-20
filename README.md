@@ -1,12 +1,32 @@
-# Controly poor documentation!
+# Controly
 
-This will explain if you will want to add new module or device to the Controly!
+V tem README bom predstavil aplikacijo Controly
 
-## 1. Adding a new device
-### 1. a) Code on device (on raspberry and arduino):
-**On raspberry** all you will need is a copy of "Controly Device". In there change DEVICE_NAME variable in device_specific.py to the name of device (same as you will set it in the Controly website
+## 1. Kaj je to?
+Controly je spletna aplikacija, na kateri lahko preprosto upravljaš s 'Controly Napravo'. Projekt je sestavljen iz dveh delov, spletne aplikacije za nadzor nad napravami in fizične naprave.
 
-**On arduino** you will run arduino code called "main.ino", but first you have to change **jsonUpdate** function in "jsonUpdateFunction.ino". Set this function so that will update every needed value with a value from json changes from Controly. You will also have to define every variable at the start of the "main.ino" file
+**Fizična naprava** je enota sestavljena iz Arduino mikrokrmilnika in Raspberry Pi računalnika. Raspberry Pi je uporabljen za povezavo Arduina s glavnim Controly strežnikom in zagotavlja prenos podatkov med spletno aplikacijo in Arduinom
 
-### 1. b) Code on server (Controly website):
-Just go to the Controly admin page, to the device section and click add new device. Fill out the form and enjoy!
+**Spletna aplikacija:**
+![Spletna aplikacija](https://i.postimg.cc/NFNK8Y6X/Screenshot-2023-06-20-at-13-39-01.png)
+Uporabnik lahko preprosto spreminja/nadzoruje želeno napravo in njene lastnosti
+Ko uporabnik shrani spremembe na spletni strani se zamenja tudi lastnost na izbrani napravi.
+**Primer:** Uporabnik upravlja z Controly napravo 'Stopnice' (po naših stopnicah so nameščene LED lučke. Vsakič, ko gre nekdo po stopnicah gor, se lučke prižgejo). Uporabnik je na spletni strani izbral zeleno barvo. Ko gre nekdo gor, se prižgejo zeleno.
+![enter image description here](https://i.postimg.cc/7htXb5LJ/IMG-2605.png)
+![enter image description here](https://i.postimg.cc/yYWvtyfm/IMG-2606.png)
+
+## 2. Prednosti
+### 1. Izjemna odzivnost platforme - od klika gumba 'Shrani' na spletu in vse do dejanske spremembe naprave traja v povprečju ±0.5 sekund
+### 2. Obojestransko pošiljanje informacij - Controly naprava lahko pošlje informacije nazaj spletni aplikaciji (npr.: 'uspešna naložitev', 'zaznano gibanje',...)
+
+## Slike
+Delovanje aplikacije se še najlažje prikaže s slikami
+
+### Prijava
+![Prijava](https://i.postimg.cc/Y9gtd7QV/Screenshot-2023-06-20-at-13-34-30.png)
+
+### Nadzor nad napravami
+![Nadzor](https://i.postimg.cc/8kt0x3wn/Screenshot-2023-06-20-at-13-35-18.png)
+
+### Dodajanje naprave - ko dodaš napravo se samodejno prenese potrebna C++ koda za upravljanje z mikrokrmilnikom
+![Prenos](https://i.postimg.cc/s2HmDB0F/Screenshot-2023-06-20-at-13-54-26.png)
