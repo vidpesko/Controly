@@ -1,0 +1,73 @@
+<!-- Add Device Modal -->
+<div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addModalLabel">Dodajte napravo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="nameInput" class="form-label">Ime naprave</label>
+                            <input type="name" class="form-control" id="nameInput" aria-describedby="emailHelp"
+                                placeholder="Npr.: Lucke v sobi" required>
+                            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="serialPortInput" class="form-label">Ime Serial Port-a</label>
+                            <input type="name" class="form-control" id="serialPortInput"
+                                placeholder="Npr.: /dev/cu.usbmodem13201" required>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="device-modules" class="form-label">Moduli</label>
+                            <select class="form-select" id="deviceModules" multiple aria-label="multiple select example" required>
+                                {% for module in all_modules %}
+                                <option value="{{module.code_name}}">{{module.user_friendly_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <input class="form-check-input" type="checkbox" value="" id="createNewQuery">
+                            <label for="createNewQuery" class="form-label">Ustvari novo napravo v bazi</label>
+                        </div>
+                        <button type="button" id="download-btn" class="btn btn-primary">Prenesi</button>
+                        <div class="alert alert-danger mt-2" id="wrongInput" role="alert" style="display: none;">
+                            Obrazec ni bil pravilno izpolnjen!
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Zapri</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var nameInput = document.getElementById('nameInput');
+    var serialInput = document.getElementById('serialPortInput');
+    var deviceModules = document.getElementById('deviceModules');
+    var newCheck = document.getElementById('createNewQuery');
+    var wrongInput = document.getElementById('wrongInput');
+    var createNewQueryState = '';
+
+    function downloadBtn() {
+        var options = deviceModules.selectedOptions
+        if (nameInput.value == '' || serialInput.value == '' || options.length == 0) {
+            wrongInput.style.display = 'block';
+        } else {
+            wrongInput.style.display = 'none';
+            if (newCheck.checked) { createNewQueryState = 'True'} else { createNewQueryState = 'False'}
+            var link = `{% url 'add' %}?name=${nameInput.value}&serial=${serialInput.value}&create_new=${createNewQueryState}&`;
+            for (let i = 0; i<options.length; i++){
+                link += `modules=${options[i].value}&`;
+            }
+            window.location.href = link;
+        }
+    }
+
+    document.getElementById('download-btn').onclick = downloadBtn;
+</script>

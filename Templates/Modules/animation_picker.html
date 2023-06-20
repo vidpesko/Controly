@@ -1,0 +1,37 @@
+{% load get_key %}
+{% load get_value %}
+
+<!-- ! Animation -->
+<div class="col-xxl-4 col-md-6 order-2">
+    <div id="animationCard" class="card info-card customers-card" style="border-radius:26px; height: 174px;">
+
+        <div class="card-body" style="position: relative; cursor: pointer;">
+            <h5 class="card-title">Izberi animacijo</h5>
+
+            <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-collection-play"></i>
+                </div>
+                <div class="ms-2"></div>
+
+                <select class="form-select w-100" id="{{id}}Animation" onchange="check()" aria-label="Default select example">
+                    {% for ani in animations %}
+                    <option {% if ani.code_name == device.animation.code_name %} selected {% endif %} value="{{ani.code_name}}">
+                        {{ani.user_friendly_name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    animationDropdown = document.querySelector('#{{id}}Animation');
+    check();
+
+    function check() {
+        modules['{{module.code_name}}'] = animationDropdown.value;
+    }
+</script>

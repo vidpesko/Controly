@@ -1,0 +1,102 @@
+<!-- ! Schedule Module -->
+<div class="col-12 order-5">
+    <div id="stateCard" class="card info-card sales-card p-0" style="border-radius:26px;">
+
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <h5 class="card-title">{{module.title}}</h5>
+            </div>
+            <div class="form-check form-schedule"
+                style="background-color: #FFDDD2; border-radius: 16px; padding: 10px;">
+                <div class="">
+                    <label for="turn_on_time"><b>Ob:</b></label>
+                    <input type="time" id="turn_on_time" name="turn_on_time" value="12:30">
+
+                    <label for="scheduled_scene"><b>prizgi izbrano sceno:</b></label>
+                    <select class="form-select" aria-label="Izberi sceno" id="scheduled_scene" style="margin: 6px 0px;">
+                        <option value="None" selected>Izberite sceno</option>
+                        {% for scene in scenes %}
+                        <option value="{{scene.name}}">{{scene.name}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="turn_off_time"><b>ki jo ugasni ob:</b></label>
+                    <input type="time" id="turn_off_time" name="turn_off_time" value="13:30">
+                </div>
+
+                <div class="w-100 d-flex justify-content-between">
+                    <button class="btn btn-primary" onclick="addSchedule(this)">Dodaj urnik</button>
+                </div>
+                <p id="error_msg" class="mt-2"></p>
+            </div>
+
+            <!-- ! List of all created schedules -->
+            <div class="created-schedules mt-2">
+                <div class="created">
+                    <p>Ob <b>15:40</b> se izvede scena <b>Scene 54</b>, ki pa se prekine/ugasne ob <b>16:30</b></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // SCHEDULE FORMAT: 15:30-16:30-{scene_name}&17:30 ...
+    modules['{{module.code_name}}'] = '';
+
+    const turnOnTime = document.getElementById('turn_on_time');
+    const turnOffTime = document.getElementById('turn_off_time');
+    const selectedScheduleScene = document.getElementById('scheduled_scene');
+    const errorMsg = document.getElementById('error_msg');
+
+    var schedule = '';
+
+    // Will be called when creating schedule
+    function addSchedule(e) {
+        // 1. Check both end and start time values
+        var on = turnOnTime.value;
+        var off = turnOffTime.value;
+
+        // Checking if they are not empty
+        if (on == '' || off == '') {
+            errorMsg.textContent = 'Vpisite cas';
+            errorMsg.style.display = 'block';
+            return
+        }
+
+        // 2. If both time inputs are filled, go onto next step -> check scene selction
+        var scene = selectedScheduleScene.value;
+        if (scene == 'None') {
+            errorMsg.textContent = 'Izberite sceno';
+            errorMsg.style.display = 'block';
+            return
+        }
+
+        // 3. Now you have every value, with right data
+        modules['{{module.code_name}}'] = `${on}-${off}-${scene}`;
+        // Success
+        errorMsg.textContent = 'Dodan je bil urnik';
+        errorMsg.style.display = 'block';
+        errorMsg.style.backgroundColor = 'green';
+    }
+
+    // turnOnTime.addEventListener('change', saveTime);
+
+</script>
+
+<style>
+    #error_msg {
+        color: white;
+        background-color: red;
+        padding: 4px;
+        display: none;
+    }
+
+    .created-schedules {}
+
+    .created {
+        border-radius: 4px;
+        background-color: #FFDDD2;
+    }
+</style>

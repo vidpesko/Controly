@@ -1,0 +1,67 @@
+<!-- ! Rest Color Picker -->
+<div class="col-12 col-xxl-6 order-5">
+    <div class="restContainer colorContainer">
+        <div class="row w-100">
+            <div class="text-center">
+                <h5 style="font-weight: 600;">Barva v mirovanju</h5>
+            </div>
+            <div class="restcolor col-6"></div>
+            <div class="config row m-0 gx-0 px-3 justify-content-center">
+                <div class="config-title col-12">
+                    <h5><b>Izbrana barva</b></h5>
+                </div>
+                <div class="selected-color-text col-12"></div>
+                <div class="selected-color col-12" style="max-width: 250px;"></div>
+                <div class="config-title col-12">Shranjene barve</div>
+                {% for color in recently_used_rest %}
+                <div class="saved-color col-3" data-color="{{color.hex_value}}"
+                    onclick="changeSelectedRestColor('#{{color.hex_value}}')"
+                    style="background-color: #{{color.hex_value}};"></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    class RestColorPicker {
+        constructor(root) {
+            this.root = root;
+            this.colorjoe = colorjoe.rgb(this.root.querySelector(".restcolor"));
+            this.selectedColor = null;
+
+            this.colorjoe.show();
+            this.setSelectedColor("#{{device.rest_color.hex_value}}");
+
+            this.colorjoe.on("change", color => {
+                this.setSelectedColor(color.hex(), true);
+            });
+        }
+
+        setSelectedColor(color, skipCjUpdate = false) {
+            this.selectedColor = color;
+            this.root.querySelector(".selected-color-text").textContent = color.toUpperCase();
+            this.root.querySelector(".selected-color").style.background = color;
+            this.saveChangedColor(color);
+            if (!skipCjUpdate) {
+                this.colorjoe.set(color);
+            }
+        }
+
+        saveChangedColor(color) {
+            modules['{{module.code_name}}'] = color;
+        }
+    }
+
+    const rest_cp = new RestColorPicker(document.querySelector(".restContainer"));
+    // Creating new name in modules dict
+    modules['{{module.code_name}}'] = rest_cp.selectedColor;
+
+    rest_cp.setSelectedColor('#{{device.rest_color.hex_value}}')
+
+    // Used for recently used colors
+    function changeSelectedRestColor(color) {
+        rest_cp.setSelectedColor(color);
+    }
+</script>

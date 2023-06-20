@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+<!-- ~ If you desire to add custom elements to the navbar, add them here -->
+{% block customnavbar %}
+{% endblock %}
+
+{% block content %}
+
+{% include "sidebar.html" %}
+
+<main id="main" class="main">
+    <div class="container">
+
+        <section class="section error-404 d-flex flex-column align-items-center justify-content-center p-0">
+            <div id="download-msg" class="text-center">
+                <h1><i class="bi bi-hand-thumbs-up"></i></h1>
+                <h2 class="mt-4">Uspesna ustvaritev kode!</h2>
+                <a class="btn btn-primary" style="background-color: #4154f1;" href="{% static 'CreatedCode/' %}ControlyDevice-{{device}}.zip" download>Prenesi kodo</a>
+                <a class="btn btn-danger" style="background-color: red;" href="{% url 'delete_created' %}?path={% static 'CreatedCode/' %}ControlyDevice-{{device}}.zip"><span data-bs-toggle="tooltip" data-bs-title="Ustvarjena koda se bo z odhodom domov izbrisala!"><i class="bi bi-box-arrow-left"></i> Pojdi domov</span></a>
+            </div>
+            <img src="{% static 'assets/img/old_man.png' %}" class="img-fluid" alt="Page Not Found">
+        </section>
+
+    </div>
+</main><!-- End #main -->
+
+<style>
+    #clr-picker {
+        display: none;
+    }
+
+    #download-msg {
+        z-index: 10;
+    }
+
+    .error-404 img {
+        position: absolute;
+        bottom: 0;
+        width: 42%;
+    }
+
+
+</style>
+{% endblock %}

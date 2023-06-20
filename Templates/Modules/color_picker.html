@@ -1,0 +1,84 @@
+<!-- ! Color Picker -->
+<div class="col-12 col-xxl-6 order-4">
+    <div class="activeColor colorContainer">
+        <div class="row w-100">
+            <div class="text-center">
+                <h5 style="font-weight: 600;">
+                    {% if module.title != '' %}{{ module.title }}{% else %}Izberi Barvo{%endif %}
+                </h5>
+            </div>
+            <div class="colorjoe col-6" onmouseover=""></div>
+            <div class="config row m-0 gx-0 px-3 justify-content-center">
+                <div class="config-title col-12">
+                    <h5><b>Izbrana Barva</b></h5>
+                </div>
+                <div class="selected-color-text col-12"></div>
+                <div class="selected-color col-12" style="max-width: 250px;"></div>
+                <div class="config-title col-12">Shranjene barve</div>
+                {% for color in recently_used %}
+                <div class="saved-color col-3" data-color="{{color.hex_value}}"
+                    onclick="changeSelectedColor('#{{color.hex_value}}')"
+                    style="background-color: #{{color.hex_value}};"></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    class ColorPicker {
+        constructor(root) {
+            this.root = root;
+            this.colorjoe = colorjoe.rgb(this.root.querySelector(".colorjoe"));
+            this.selectedColor = null;
+
+            this.colorjoe.show();
+            this.setSelectedColor("#{{device.color.hex_value}}");
+
+            this.colorjoe.on("change", color => {
+                this.setSelectedColor(color.hex(), true);
+            });
+        }
+
+        setSelectedColor(color, skipCjUpdate = false) {
+            this.selectedColor = color;
+            this.root.querySelector(".selected-color-text").textContent = color.toUpperCase();
+            this.root.querySelector(".selected-color").style.background = color;
+            this.saveChangedColor(color);
+            this.changeColorOfSwitch();
+            if (!skipCjUpdate) {
+                this.colorjoe.set(color);
+            }
+        }
+
+        saveChangedColor(color) {
+            modules['{{module.code_name}}'] = color;
+        }
+
+        changeColorOfSwitch() {
+            try {
+                if (actual_checkbox.checked) {
+                    document.getElementsByClassName('switch-card')[0].style.backgroundColor = active_cp.selectedColor;
+                }
+            } catch { }
+        }
+    }
+
+    const active_cp = new ColorPicker(document.querySelector(".activeColor"));
+    // Creating new name in modules dict
+    modules['{{module.code_name}}'] = active_cp.selectedColor;
+
+    active_cp.setSelectedColor('#{{device.color.hex_value}}')
+
+    // Used for recently used colors
+    function changeSelectedColor(color) {
+        active_cp.setSelectedColor(color);
+        active_cp.saveChangedColor(color);
+        try {
+            var checkbox = document.getElementsByClassName('switch-checkbox')[0];
+            active_cp.changeColorOfSwitch();
+        } catch {
+
+        }
+    }
+</script>

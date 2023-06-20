@@ -1,0 +1,531 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-item">
+      <a class="nav-link " href="index.html">
+        <i class="bi bi-house"></i>
+        <span>Domov</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'change_password' %}">
+        <i class="bi bi-pencil"></i>
+        <span>Spremenite geslo</span>
+      </a>
+    </li><!-- End Components Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'logout' %}">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Odjava</span>
+      </a>
+    </li><!-- End Components Nav -->
+  </ul>
+
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Nadzorna Plosca</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Domov</a></li>
+        <li class="breadcrumb-item active">Nadzorna Plosca</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section dashboard">
+    <div class="row">
+
+      <!-- * Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
+
+          <!-- ! State -->
+          <div class="col-xxl-4 col-md-6">
+            <div id="stateCard" class="card info-card sales-card" onclick="changeState(this)"
+              style="border-radius:26px;">
+
+              <div class="card-body" style="position: relative; cursor: pointer;">
+                <h5 class="card-title">Prizgi/Ugasni</h5>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" {% if led.state %} checked {% endif %}
+                    id="stateCheckbox">
+                  <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                </div>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+                    id="powerButton">
+                    <i class="bi bi-power"></i>
+                  </div>
+                  <div class="ps-2">
+                    {% if led.state %}
+                    <h6 id="stateCardBody">Prizgan</h6>
+                    {% else %}
+                    <h6 id="stateCardBody">Ugasnjen</h6>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- End Sales Card -->
+
+          <!-- ! Animation -->
+          <div class="col-xxl-4 col-md-6">
+            <div id="animationCard" class="card info-card customers-card" style="border-radius:26px;">
+
+              <div class="card-body" style="position: relative; cursor: pointer;">
+                <h5 class="card-title">Izberi animacijo</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-collection-play"></i>
+                  </div>
+                  <div class="ms-2"></div>
+                  {{form.animation}}
+                </div>
+              </div>
+
+            </div>
+          </div><!-- End Sales Card -->
+
+          <!-- ! Scene -->
+          <div class="col-xxl-4 col-md-6">
+            <div id="sceneCard" class="card info-card sales-card" style="border-radius:26px;">
+
+              <div class="card-body" style="position: relative; cursor: pointer;">
+                <h5 class="card-title">Zamenjaj sceno</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-house-heart"></i>
+                  </div>
+                  <select class="form-select ms-2" aria-label="Default select example">
+                    <option value="None" selected>Izberi sceno</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- End Sales Card -->
+        </div><!-- End Revenue Card -->
+
+        <!-- ! Color Picker -->
+        <div class="col-12">
+          <div class="container2">
+            <div class="row w-100">
+              <div class="colorjoe col-6" onmouseover="changeColorOfSwitch()"></div>
+              <div class="config row m-0 gx-0 px-3 justify-content-center">
+                <div class="config-title col-12">
+                  <h5><b>Izbrana barva</b></h5>
+                </div>
+                <div class="selected-color-text col-12"></div>
+                <div class="selected-color col-12" style="max-width: 250px;"></div>
+                <div class="config-title col-12">Shranjene barve</div>
+                {% for color in recently_used %}
+                <div class="saved-color col-3" data-color="{{color.hex_value}}"
+                  onclick="changeSelectedColor('#{{color.hex_value}}')"></div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ! Buttons -->
+        <div class="col-12 my-4">
+          <div class="row d-flex justify-content-end gy-2">
+            <p class="col-12 text-center">Nazadnje posodobil <span style="color: blue;">{{led.updated_by.first_name}}
+                {{led.updated_by.last_name}}</span> dne
+              <span style="color: blue;">{{led.updated}}.</span>
+            </p>
+            <div class="col-6 col-md-3 px-2">
+              <button onclick="location.reload()" class="btn btn-outline-danger w-100 actionsButton" id="cancelBtn"><i
+                  class="bi bi-x-circle"></i>
+                Preklici</button>
+            </div>
+            <div class="col-6 col-md-3 px-2">
+              <button class="btn btn-outline-primary w-100 actionsButton" id="addBtn"><i class="bi bi-plus-circle"></i>
+                Dodaj
+                med
+                scene</button>
+            </div>
+            <div class="col-12 col-md-3 px-2">
+              <form action="" method="post">
+                {%csrf_token%}
+                <input type="hidden" name="state" value="{{led.state}}" id="stateHidden">
+                <input type="hidden" name="animation" value="{{led.animation}}" id="animationHidden">
+                <input type="hidden" name="scene" value="HELo" id="">
+                <input type="hidden" name="color" value="{{led.color.hex_value}}" id="colorHidden">
+                <button type="submit" class="btn btn-primary w-100 actionsButton" id="saveBtn"><i
+                    class="bi bi-cloud-upload"></i>
+                  Shrani</button>
+              </form>
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+
+      <!-- * Right side columns -->
+      <div class="col-lg-4" style="max-width: 500px;">
+
+        <!-- Recent Activity -->
+        <div class="card" style="border-radius: 26px;">
+          <div class="card-body">
+            <h5 class="card-title mt-2 pt-2 pb-0 text-center w-100">Uporabniki, dodani v domu</h5>
+            <hr class="mb-2 p-2">
+            <div class="activity">
+              {% for user in users %}
+              {% if user.is_superuser %}
+              <div class="activity-item special d-flex align-items-center mb-2">
+                <div class="imageWrapper">
+                  <img class="usersListImg" data-image="{{user.first_name}}"
+                    src="{% static 'assets/img/profile-img.jpg' %}" alt="">
+                </div>
+                <div class="text h-100 text-center d-flex justify-content-start align-items-center">
+                  <h4 class="mx-2 my-0">{{user.first_name}} {{user.last_name}}</h4>
+                  <i class="bi bi-star"></i>
+                </div>
+                <hr>
+              </div>
+              {% else %}
+              <div class="activity-item d-flex align-items-center mb-2">
+                <div class="imageWrapper">
+                  <img class="usersListImg" data-image="{{user.first_name}}"
+                    src="{% static 'assets/img/profile-img.jpg' %}" alt="">
+                </div>
+                <div class="text h-100 text-center d-flex justify-content-start align-items-center">
+                  <h4 class="mx-2 my-0">{{user.first_name}} {{user.last_name}}</h4>
+                </div>
+                <hr>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div><!-- End Recent Activity -->
+        </div>
+      </div>
+    </div><!-- End Left side columns -->
+
+    <script>
+      var stateOfCheck = '{{led.state}}';
+
+      class ColorPicker {
+        constructor(root) {
+          this.root = root;
+          this.colorjoe = colorjoe.rgb(this.root.querySelector(".colorjoe"));
+          this.selectedColor = null;
+
+          this.colorjoe.show();
+          this.setSelectedColor("#{{led.color.hex_value}}");
+
+          this.colorjoe.on("change", color => {
+            this.setSelectedColor(color.hex(), true);
+          });
+        }
+
+        setSelectedColor(color, skipCjUpdate = false) {
+          this.selectedColor = color;
+          this.root.querySelector(".selected-color-text").textContent = color;
+          this.root.querySelector(".selected-color").style.background = color;
+
+          if (!skipCjUpdate) {
+            this.colorjoe.set(color);
+          }
+        }
+      }
+
+      const cp = new ColorPicker(document.querySelector(".container2"));
+
+      function changeSelectedColor(color) {
+        cp.setSelectedColor(color);
+        changeColorOfSwitch();
+      }
+
+      var savedColors = document.getElementsByClassName('saved-color');
+      var i = 0;
+      while (i < savedColors.length) {
+        color = savedColors[i].dataset.color;
+        savedColors[i].style.backgroundColor = '#' + color;
+        i++;
+      }
+
+      const stateCheckbox = document.getElementById('stateCheckbox');
+      const stateCardText = document.getElementById('stateCardBody');
+      const powerButton = document.getElementById('powerButton');
+
+      function changeState(e) {
+        if (stateCheckbox.checked) {
+          stateOfCheck = 'False';
+          stateCardText.textContent = 'Ugasnjen';
+          e.style.backgroundColor = "white";
+          stateCheckbox.checked = false;
+          powerButton.style.backgroundColor = '#C6C6C6';
+          powerButton.style.color = '#0D6EFD';
+        } else {
+          stateOfCheck = 'True';
+          stateCardText.textContent = 'Prizgan';
+          e.style.backgroundColor = cp.selectedColor;
+          stateCheckbox.checked = true;
+          powerButton.style.backgroundColor = '#0D6EFD';
+          powerButton.style.color = 'white';
+        }
+      }
+
+      if (stateCheckbox.checked) {
+        document.getElementById('stateCard').style.backgroundColor = '#{{led.color.hex_value}}';
+        powerButton.style.backgroundColor = '#0D6EFD';
+        powerButton.style.color = 'white';
+      } else {
+        document.getElementById('stateCard').style.backgroundColor = 'white';
+        powerButton.style.backgroundColor = '#C6C6C6';
+        powerButton.style.color = '#0D6EFD';
+      }
+
+      var profileImages = document.getElementsByClassName('usersListImg');
+
+      var possibleManca = ['{% static "assets/img/profiles/manca1.jpg" %}', '{% static "assets/img/profiles/manca2.jpg" %}', '{% static "assets/img/profiles/manca3.jpg" %}'];
+      var possibleVid = ['{% static "assets/img/profiles/vid1.jpg" %}', '{% static "assets/img/profiles/vid2.jpg" %}', '{% static "assets/img/profiles/vid3.jpg" %}'];
+      var possibleLovro = ['{% static "assets/img/profiles/lovro1.jpg" %}', '{% static "assets/img/profiles/lovro2.jpg" %}'];
+      var possibleJure = ['{% static "assets/img/profiles/jure1.jpg" %}', '{% static "assets/img/profiles/jure2.jpg" %}'];
+      var possibleNina = ['{% static "assets/img/profiles/nina1.jpg" %}', '{% static "assets/img/profiles/nina2.jpg" %}'];
+
+      var possible = {
+        Vid: possibleVid,
+        Manca: possibleManca,
+        Lovro: possibleLovro,
+        Jure: possibleJure,
+        Nina: possibleNina
+      };
+
+      navbarProfileImage = document.getElementById('navbarProfileImage');
+
+      function changeUserImage(e, user) {
+        var i = 0;
+        while (i < possible[user].length) {
+          var randomInt = Math.floor(Math.random() * (possible[user].length));
+          var randomImage = possible[user][randomInt];
+          e.src = randomImage;
+          if (user == '{{request.user.first_name}}') {
+            navbarProfileImage.src = randomImage;
+          }
+          i++;
+        }
+      }
+
+      var n = 0;
+      while (n < profileImages.length) {
+        var profile = profileImages[n];
+        changeUserImage(profile, profile.dataset.image);
+        n++;
+      }
+
+      function changeColorOfSwitch() {
+        if (stateCheckbox.checked) {
+          document.getElementById('stateCard').style.backgroundColor = cp.selectedColor;
+        }
+      }
+
+      // Processing save button
+      colorHidden = document.getElementById('colorHidden');
+      animationHidden = document.getElementById('animationHidden');
+      stateHidden = document.getElementById('stateHidden');
+
+
+      function saveClick() {
+        colorHidden.value = cp.selectedColor;
+        animationHidden.value = document.getElementById('animation').value;
+        stateHidden.value = stateOfCheck;
+      }
+
+      window.setInterval(saveClick, 500);
+    </script>
+    <style>
+      .actionsButton {
+        transition-duration: 0.1s;
+        transition-property: all;
+      }
+
+      .actionsButton:hover {
+        transform: scale(1.1);
+      }
+
+      .checkedState {
+        background-color: white;
+      }
+
+      #stateCheckbox {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 45px;
+        height: 25px;
+      }
+
+      .activity-item {
+        max-height: 80px;
+        padding: 4px;
+        border-radius: 36px;
+      }
+
+      .activity-item:hover {
+        border-radius: 36px;
+        background-color: rgb(240, 240, 240);
+      }
+
+      .activity-item .imageWrapper {
+        border-radius: 50%;
+        transition-duration: 0.2s;
+        width: 40px;
+        height: 40px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .activity-item .imageWrapper:hover {
+        transform: scale(1.6);
+      }
+
+      .activity-item .text {
+        position: relative;
+        width: calc(100% - 50px);
+      }
+
+      .activity-item .text h4 {
+        font-size: 20px;
+      }
+
+      .activity-item .text i {
+        position: absolute;
+        right: 10px;
+        font-size: 22px;
+      }
+
+      .special {
+        background-color: #ffa500;
+        color: white;
+      }
+
+      .special:hover {
+        background-color: #eb9900;
+      }
+
+      .activity-item img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+        width: 110%;
+      }
+    </style>
+    <style>
+      #clr-picker {
+        display: none !important;
+      }
+
+      body {
+        background: #eeeeee;
+        margin: 20px;
+      }
+
+      .colorPicker {
+        background: none;
+        border: none;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      .colorPicker .twod,
+      .colorPicker .twod .bg {
+        width: 160px;
+      }
+
+      @media only screen and (min-width: 600px) {
+
+        .colorPicker .twod,
+        .colorPicker .twod .bg {
+          width: 320px;
+        }
+      }
+
+      .colorPicker .oned {
+        margin-right: 0;
+      }
+
+      .container2 {
+        display: flex;
+        width: 100%;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 26px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .config {
+        flex-grow: 1;
+        margin-left: 20px;
+      }
+
+      .config-title {
+        text-align: center;
+        padding: 15px 0;
+        font-family: sans-serif;
+        font-weight: bold;
+        /* font-size: 1.4em; */
+      }
+
+      .selected-color-text {
+        text-align: center;
+        font-family: monospace;
+        font-size: 1.6em;
+        margin-bottom: 15px;
+      }
+
+      .selected-color,
+      .saved-color {
+        box-shadow: 3px 3px 29px -11px rgba(0, 0, 0, 0.75);
+        max-width: 200px;
+        height: 30px;
+        border: 1px solid #eeeeee;
+        border-radius: 16px;
+        cursor: pointer;
+      }
+
+      .saved-color:not(:last-of-type) {
+        margin-bottom: 5px;
+        margin-right: 6px;
+      }
+    </style>
+  </section>
+
+  {% if messages %}
+  <ul class="messages px-0 pt-2" style="position: absolute; bottom: 0; right:10px;">
+    {% for message in messages %}
+    <li {% if message.tags %}
+      class="{{ message.tags }} alert px-5 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} alert-danger {% else %} alert-success {% endif %}"
+      {% endif %} role="alert" style="list-style: none;">
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</main><!-- End #main -->
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% include "sidebar.html" %}
+{% include 'add_device_modal.html' %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Izberite napravo</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            {% for device in devices %}
+            <div class="col-lg-6">
+                <a href="/naprava/{{device.name}}">
+                    <div class="card select-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ device.name }}</h5>
+                            <p>Spremembe: '{{ device.changes }}' ob {{ device.change_time }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+
+            <div class="col-lg-6">
+                <div class="row">
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#addDeviceModal" class="col-6">
+                        <div class="card select-card select-card-special">
+                            <div class="card-body">
+                                <h5 class="card-title">Dodaj napravo</h5>
+                                <p>Dodajte novo napravo!
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                    <a type="button" href="{% url 'add' %}?uni=True" class="col-6">
+                        <div class="card select-card select-card-special-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Univerzalna koda</h5>
+                                <p>Prenesite univerzalno kodo
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'message_code.html' %}
+</main><!-- End #main -->
+
+
+{% endblock content %}

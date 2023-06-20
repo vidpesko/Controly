@@ -1,0 +1,72 @@
+{% load static %}
+
+<div class="col-12 order-5">
+    <div id="rangeCard" class="range-card card info-card sales-card p-0" style="border-radius:26px;">
+
+        <div class="card-body" style="position: relative; cursor: pointer;">
+            <h5 class="card-title" style="padding-left: 10px;">{{module.title}}</h5>
+            <div class="form-check form-switch">
+                <input onclick="changeTurnOnRange()" class="form-check-input switch-checkbox" type="checkbox" role="switch" id="rangeCheckbox">
+                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+            </div>
+            <div class="d-flex align-items-center justify-content-center w-100">
+                {% for unit in leds_range %}
+                <div id="unit{{unit}}" class="led_unit mx-1" onclick="selectUnit({{unit}})"></div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ! All the script for the module -->
+<script>
+    // * Defining all the HTML elements
+    const rangeCheckbox = document.querySelector('#rangeCheckbox');
+    let selectedUnits = [];
+
+    
+    function selectUnit(index) {
+        if (selectedUnits.includes(index)) {
+            var i = selectedUnits.indexOf(index);
+            if (index > -1) {
+                selectedUnits.splice(i, 1);
+            }
+        } else {
+            selectedUnits.push(index);
+        }
+
+        let unit = document.querySelector(`#unit${index}`);
+        unit.classList.toggle("s_unit");
+        changeTurnOnRange();
+    }
+    
+    function changeTurnOnRange() {
+        console.log(rangeCheckbox);
+        if (rangeCheckbox.checked) {
+            modules['{{module.code_name}}'] = selectedUnits;
+            console.log(modules);
+        } else {
+            modules['{{module.code_name}}'] = '';
+        }
+    }
+
+    changeTurnOnRange();
+</script>
+
+<style>
+    .led_unit {
+        width: 50px;
+        height: 50px;
+        background-color: rgb(206, 206, 206);
+    }
+    .led_unit:hover {
+        background-color: rgb(159, 159, 159);
+    }
+    .s_unit {
+        background-color: red;
+    }
+    .s_unit:hover {
+        background-color: rgb(136, 0, 0) !important;
+    }
+</style>

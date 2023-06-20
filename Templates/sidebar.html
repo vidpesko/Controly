@@ -1,0 +1,37 @@
+{% include 'add_device_modal.html' %}
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link collapsed" id="change-device" href="{% url 'choose' %}">
+                <i class="bi bi-house"></i>
+                <span>Zamenjajte napravo</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'change_password' %}">
+                <i class="bi bi-pencil"></i>
+                <span>Spremenite geslo</span>
+            </a>
+        </li><!-- End Components Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'logout' %}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Odjava</span>
+            </a>
+        </li><!-- End Components Nav -->
+
+        <li class="nav-item w-100" id="add-device-wrapper">
+            <!-- <a class="nav-link collapsed" id="add-device" href=""> -->
+            <!-- <i class="bi bi-box-arrow-right"></i> -->
+            <!-- <span>Dodaj Napravo</span> -->
+            <a type="button" class="nav-link collapsed mt-2 w-100" id="add-device" data-bs-toggle="modal"
+                data-bs-target="#addDeviceModal"><i class="bi bi-plus-circle"></i> Dodaj napravo</a>
+        </li><!-- End Components Nav -->
+    </ul>
+
+</aside><!-- End Sidebar-->

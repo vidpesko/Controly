@@ -1,0 +1,118 @@
+{% load static %}
+<!-- ! Switch Module -->
+
+<!-- ! Requirements:
+    * -id
+    * -title
+! -->
+
+<div class="col-xxl-4 col-md-6 order-1">
+    <div id="switchCard" class="switch-card card info-card sales-card p-0" style="border-radius:26px;">
+
+        <div class="card-body" style="position: relative; cursor: pointer;">
+            <h5 class="card-title" style="padding-left: 10px;">{{module.title}}</h5>
+            <div class="form-check form-switch">
+                <input onclick="changeState()" class="form-check-input switch-checkbox" type="checkbox" role="switch" {% if device.state %}
+                    checked {% endif %} id="{{id}}Checkbox">
+                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" id="{{id}}Icon"
+                    style="background-color: #C6C6C6;">
+                    <i class="bi bi-power"></i>
+                </div>
+                <div class="ps-2">
+                    {% if device.state %}
+                    <h6 id="{{id}}CardText">Prizgan</h6>
+                    {% else %}
+                    <h6 id="{{id}}CardText">Ugasnjen</h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ! All the script for the module -->
+<script>
+    // * Defining all the HTML elements
+    const root_id = '#{{id}}';
+    const root = document.querySelector('#switchCard');
+    const switch_icon = document.querySelector(root_id + 'Icon');
+    const switch_text = document.querySelector(root_id + 'CardText');
+    const actual_checkbox = document.querySelector(root_id + 'Checkbox');
+
+    // Other variables
+    const turn_off_text = 'Ugasnjen';
+    const turn_on_text = 'Prizgano';
+    const turn_off_color = '#ffffff'
+
+    let state = ('{{ device.state }}' == 'True');
+    modules['{{module.code_name}}'] = state;
+
+    let color = '';
+    function update_color() {
+        if ('{{device.color.hex_value}}' == '') {
+            color = null;
+        } else {
+            color = '#{{device.color.hex_value}}';
+        }
+    }
+
+    update_color();
+    if (actual_checkbox.checked && color != null) {
+        console.log(color);
+        root.style.backgroundColor = color;
+        switch_icon.style.backgroundColor = '#0D6EFD';
+        switch_icon.style.color = 'white';
+    }
+
+    function click() {
+        update_color();
+
+        // If switch is pressed and is already checked => TURN OFF device
+        if (actual_checkbox.checked) {
+            state = false;
+            console.log(modules)
+
+            switch_text.textContent = turn_off_text;
+            root.style.backgroundColor = turn_off_color;
+            actual_checkbox.checked = false;
+            switch_icon.style.backgroundColor = '#C6C6C6';
+            switch_icon.style.color = '#0D6EFD';
+
+            // If switch is pressed and is not checked => TURN ON device
+        } else {
+            state = true;
+            switch_text.textContent = turn_on_text;
+
+            // Update switch color, if needed
+            if (color != null) {
+                color = document.getElementsByClassName('selected-color-text')[0].textContent;
+                root.style.backgroundColor = color;
+            } else {
+                root.style.backgroundColor = '#ffffff';
+            }
+
+            actual_checkbox.checked = true;
+            switch_icon.style.backgroundColor = '#0D6EFD';
+            switch_icon.style.color = 'white';
+        }
+
+        // Update modules dictionary with new state
+        modules['{{module.code_name}}'] = state;
+    }
+
+    function changeState() {
+        if (actual_checkbox.checked) {
+            actual_checkbox.checked = false;
+        } else {
+            actual_checkbox.checked = true;
+        }
+    }
+
+    root.addEventListener('click', click);
+
+</script>

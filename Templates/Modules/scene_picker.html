@@ -1,0 +1,37 @@
+<!-- ! Scene -->
+<div class="col-xxl-4 col-md-6 order-3">
+    <div id="animationCard" class="card info-card customers-card" style="border-radius:26px; height: 174px;">
+
+        <div class="card-body" style="position: relative; cursor: pointer;">
+            <h5 class="card-title">{{module.title}}</h5>
+
+            <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-house-heart"></i>
+                </div>
+                <div class="ms-2"></div>
+                <form action="">
+                    {% csrf_token %}
+                    <select class="form-select w-100" id="{{id}}Scene" onchange="changeScene()">
+                        <option value="none" selected>Izberite sceno</option>
+                        {% for scene in scenes %}
+                        <option value="{{scene.scene_name}}">{{scene.scene_name}}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sceneDropdown = document.querySelector('#{{id}}Scene');
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    const url = window.location.href.split('?')[0];
+    console.log(url);
+
+    function changeScene() {
+        window.location.href = url + '?scene=' + sceneDropdown.value;
+        modules['{{module.code_name}}'] = sceneDropdown.value;
+    }
+</script>

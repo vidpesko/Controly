@@ -1,0 +1,11 @@
+{% if messages %}
+<ul class="messages px-0 pt-2" style="position: absolute; bottom: 0; right:10px;">
+    {% for message in messages %}
+    <li {% if message.tags %}
+        class="{{ message.tags }} alert px-5 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} alert-danger {% else %} alert-success {% endif %}"
+        {% endif %} role="alert" style="list-style: none;">
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
